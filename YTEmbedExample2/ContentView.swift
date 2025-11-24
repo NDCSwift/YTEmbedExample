@@ -36,7 +36,7 @@ struct YouTubePlaylistList {
 // Stores a list of individual YouTube videos
 struct YouTubeVideoList {
     static let videos = [
-        YouTubeVideo(title: "SwiftUI Tutorial For Beginners | Learn Xcode (2025)", videoID: "_utOlpGlhes?si=hg6FcejvQ0StQsTT"),
+        YouTubeVideo(title: "New Coders Start Here", videoID: "YkCU3SQcN5I"),
         YouTubeVideo(title: "SwiftUI Navigation & TabView: The Ultimate Guide", videoID: "m8KvqS7VMZs?si=qOVaVX8b_8Na2KDw"),
         YouTubeVideo(title: "SwiftUI Building a Health App with HealthKit", videoID: "ORJ9rvqoR9s?si=gLzZfOW2oARYYLq7")
     ]

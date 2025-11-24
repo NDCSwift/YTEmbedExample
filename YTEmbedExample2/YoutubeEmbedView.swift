@@ -11,45 +11,72 @@
 import SwiftUI
 import WebKit
 
-// A SwiftUI wrapper for WKWebView to embed YouTube videos and playlists
 struct YoutubeEmbedView: UIViewRepresentable {
-    let videoID: String? // YouTube video ID (not the full URL)
-    let playlistID: String? // YouTube playlist ID
     
-    // Creates the WKWebView instance
+    let videoID: String?
+    let playlistID: String?
+    
+    // MARK: - Create WebView
     func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView() // Initialize WKWebView
-        webView.scrollView.isScrollEnabled = false // Disable scrolling
+        let webView = WKWebView()
+        
+        webView.scrollView.isScrollEnabled = false
+        webView.scrollView.bounces = false
+        webView.configuration.allowsInlineMediaPlayback = true
+        webView.configuration.mediaTypesRequiringUserActionForPlayback = []
+        
         return webView
     }
     
-    // Loads the YouTube video or playlist into the web view
+    // MARK: - Update WebView
     func updateUIView(_ webView: WKWebView, context: Context) {
-        let embedHTML: String // Holds the HTML string for embedding
-
+        var html: String = ""
+        
         if let playlistID = playlistID {
-            // Embed a full YouTube playlist
-            embedHTML = """
-            <html>
-            <body style="margin: 0; padding: 0;">
-            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/videoseries?list=\(playlistID)" frameborder="0" allowfullscreen> </iframe>
-            </body>
-            </html>
-            """
+            let cleanID = sanitizeID(playlistID)
+            
+            html = makeEmbedHTML(
+                src: "https://www.youtube-nocookie.com/embed/videoseries?list=\(cleanID)&playsinline=1&modestbranding=1&rel=0&enablejsapi=1&origin=https://www.youtube-nocookie.com"
+            )
+            
         } else if let videoID = videoID {
-            // Embed a single YouTube video
-            embedHTML = """
-            <html>
-            <body style="margin: 0; padding: 0;">
-            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/\(videoID)?playsinline=1" frameborder="0" allowfullscreen> </iframe>
-            </body>
-            </html>
-            """
+            let cleanID = sanitizeID(videoID)
+            
+            html = makeEmbedHTML(
+                src: "https://www.youtube-nocookie.com/embed/\(cleanID)?playsinline=1&modestbranding=1&rel=0&enablejsapi=1&origin=https://www.youtube-nocookie.com"
+            )
+            
         } else {
-            // Display a message if no video or playlist is selected
-            embedHTML = "<html><body><p> No video or playlist is selected </p></body></html>"
+            html = "<html><body><p>No video selected.</p></body></html>"
         }
         
-        webView.loadHTMLString(embedHTML, baseURL: nil) // Load the HTML string into the web view
+        webView.loadHTMLString(html, baseURL: URL(string: "https://www.youtube-nocookie.com"))
+    }
+    
+    // MARK: - Helper: Clean "VIDEO_ID?si=xyz"
+    private func sanitizeID(_ raw: String) -> String {
+        raw.components(separatedBy: ["?", "&"]).first ?? raw
+    }
+    
+    // MARK: - Helper: Build Responsive HTML
+    private func makeEmbedHTML(src: String) -> String {
+        """
+        <html>
+        <head>
+            <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
+        </head>
+        <body style="margin:0; padding:0; background:black;">
+            <iframe
+                width="100%"
+                height="100%"
+                src="\(src)"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </body>
+        </html>
+        """
     }
 }
+
