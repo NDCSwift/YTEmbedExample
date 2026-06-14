@@ -20,7 +20,7 @@ This project shows how to embed YouTube content in a SwiftUI app using a `WKWebV
 
 [![Watch on YouTube](https://img.shields.io/badge/YouTube-Watch%20the%20Tutorial-red?style=for-the-badge&logo=youtube)](https://youtu.be/JopAJwd3iC4)
 
-> This project was built for the [NoahDoesCoding YouTube channel](https://www.youtube.com/@NoahDoesCoding97).
+> This project was built for the [NoahDoesCoding YouTube channel](https://www.youtube.com/@NoahDoesCoding).
 
 ---
 
